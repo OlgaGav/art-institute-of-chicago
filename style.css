@@ -1,0 +1,49 @@
+/* color scheme used in application */
+:root {
+    font-family: 'Avenir Next', sans-serif;
+    --medium: #C592A8;
+    /* --light: #F4CC9C; */
+    --light: #fdfefe;
+    --mint: #3EBCB3;
+    --dark-green: #1A4D4D;
+    --grey: #DBDBDB;
+}
+
+header {
+    background-color: var(--mint);
+}
+
+header div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--dark-green);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--light);
+}
+
+#navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+#artworks {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem;
+}
