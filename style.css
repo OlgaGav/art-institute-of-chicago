@@ -1,44 +1,62 @@
 /* color scheme used in application */
 :root {
-    font-family: 'Avenir Next', sans-serif;
-    --medium: #C592A8;
-    /* --light: #F4CC9C; */
-    --light: #fdfefe;
-    --mint: #3EBCB3;
-    --dark-green: #1A4D4D;
-    --grey: #DBDBDB;
+  font-family: "Avenir Next", sans-serif;
+  --medium: #c592a8;
+  --light: #fdfefe;
+  --mint: #3ebcb3;
+  --dark-green: #1a4d4d;
+  --grey: #dbdbdb;
+  --dark-grey: #333333;
 }
 
 header {
-    background-color: var(--mint);
+  background-color: var(--mint);
 }
 
 header div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 h1 {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: var(--dark-green);
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--dark-green);
+  padding: 0;
+  margin: 0;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: var(--dark-green);
+  padding: 0;
+  margin: 0;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--light);
+  margin: 0;
+  padding: 0;
+  background-color: var(--light);
 }
 
-#navigation {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 2rem;
+p {
+    font-size: 1rem;
+    color: var(--dark-green);
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
 }
 
 #artworks {
@@ -46,4 +64,39 @@ body {
   flex-direction: column;
   justify-content: space-between;
   padding: 2rem;
+}
+
+.title {
+    display: grid;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  
+}
+
+.artwork-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--dark-green);
+}
+
+.artwork-card-description {
+  font-size: 1rem;
+  color: var(--dark-green);
+}
+
+.art-image-card {
+  padding: 1rem;
+  border: 1px solid var(--grey);
+  margin: 1rem;
+  background-color: var(--dark-grey);
 }

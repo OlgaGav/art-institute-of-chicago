@@ -5,39 +5,45 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>The Art Institute of Chicago</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="icon" type="image/svg+xml" href="logo.svg" />
   </head>
   <body>
     <header>
-      <div>
+      <div class="top">
         <img
           src="logo.svg"
           alt="logo of the Art Insitute of Chicago"
           class="logo"
         />
-        <h1 id="title">The Art Institute of Chicago</h1>
+        <div class="title">
+          <h1>The Art Institute of Chicago</h1>
+          <p>Explore artworks & artists</p>
+        </div>
       </div>
     </header>
-    <section id="navigation">
+    <section class="container">
       <p>
         Discover the painting searching the artwork by artist or collection, and
         you can view the list of the work in disposal of the Art institute of
         Chicago.
       </p>
       <div>
-        <label for="search">Search by term or artist:</label>
+        <label>Explore artworks:</label>
         <input
           type="text"
-          id="search"
+          id="search-input"
           name="search"
           placeholder="Search artist, collection or by word ..."
           size="50"
         />
-        <button>Search</button>
-        <button>Clear</button>
+        <button id="search-button">Search</button>
+        <button id="clear-button">Clear</button>
       </div>
     </section>
-    <section id="artworks">Results</section>
+    <section id="artworks">
+      <p id="status">Enter a search term to find artwork.</p>
+      <div id="results" class="cards-grid"></div>
+      <div id="pagination"></div>
+    </section>
 
     <script src="script.js"></script>
   </body>
