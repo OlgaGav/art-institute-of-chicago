@@ -1,20 +1,23 @@
 const searchInput = document.querySelector("#search-input");
-const searchButton = document.querySelector("#search-button");
+const searchArtworkButton = document.querySelector("#search-artwork-button");
+const searchArtistButton = document.querySelector("#search-artist-button");
 const clearButton = document.querySelector("#clear-button");
-const resultsContainer = document.querySelector("#results");
+const resultsContainer = document.querySelector("#artworks");
+const artistsContainer = document.querySelector("#artists");
 const statusMessage = document.querySelector("#status");
 const paginationContainer = document.querySelector("#pagination");
-const defaultImg = "default.png"
-const searchURL = "https://api.artic.edu/api/v1/artworks/search";
+const defaultImg = "default.png";
+const artworkURL = "https://api.artic.edu/api/v1/artworks";
+const arstistURL = "https://api.artic.edu/api/v1/agents";
 const itemsPerPage = 10;
 const pageNumber = 1;
 
-async function fetchArtWorks(searchTerm, pageNumber = 1) {
+async function fetchArtworks(searchTerm, pageNumber = 1) {
   try {
     statusMessage.textContent = "Loading ...";
     resultsContainer.innerHTML = "";
 
-    const url = `${searchURL}?q=${encodeURIComponent(searchTerm)}&fields=id,title,artist_display,image_id&page=${pageNumber}&limit=${itemsPerPage}
+    const url = `${artworkURL}/search?q=${encodeURIComponent(searchTerm)}&fields=id,title,artist_display,image_id&page=${pageNumber}&limit=${itemsPerPage}
 `;
     const response = await fetch(url);
 
@@ -22,7 +25,7 @@ async function fetchArtWorks(searchTerm, pageNumber = 1) {
       throw new Error(`Request failed: ${response.status}`);
     }
     const result = await response.json();
-    displayArtWork(result);
+    displayArtworks(result);
     displayPagination();
   } catch (error) {
     console.error(error);
@@ -30,7 +33,56 @@ async function fetchArtWorks(searchTerm, pageNumber = 1) {
   }
 }
 
-function displayArtWork(artworks) {
+// fetch the details of the artwork by id: /artworks/{id}
+async function fetchArtwork(id) {
+  try {
+    const url = `${artworkURL}/${id}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      tch;
+      throw new Error(`Request failed: ${response.status}`);
+    }
+    const result = await response.json();
+    displayArtwork(result);
+  } catch (error) {
+    console.error(error);
+    statusMessage.textContent = error;
+  }
+}
+
+async function fetchArtistSearch(searchTerm) {
+  try {
+    const url = `${arstistURL}/search?q=${searchTerm}`
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Request failed: ${response.status}`);
+    }
+    const result = await response.json();
+    displayArtists(result);
+  } catch (error) {
+    console.error(error);
+    statusMessage.textContent = error;
+  }
+}
+
+//fetch the details of the artist by id
+async function fetchArtist(id) {
+  try {
+    const url = `${arstistURL}/${id}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      tch;
+      throw new Error(`Request failed: ${response.status}`);
+    }
+    const result = await response.json();
+    displayArtist(result);
+  } catch (error) {
+    console.error(error);
+    statusMessage.textContent = error;
+  }
+}
+
+function displayArtworks(artworks) {
   if (artworks.data.length === 0) {
     statusMessage.textContent = "No artwork found.";
     return;
@@ -45,15 +97,21 @@ function displayArtWork(artworks) {
     card.classList.add("card");
     const title = document.createElement("h2");
     title.classList.add("artwork-card-title");
-    title.textContent = artwork.title ? artwork.title : "Title is not available in catalog";
+    title.textContent = artwork.title
+      ? artwork.title
+      : "Title is not available in catalog";
 
     const artist = document.createElement("p");
     artist.classList.add("artist-card-description");
-    artist.textContent = artwork.artist_display ? artwork.artist_display : "Artist information is not available in catalog";
+    artist.textContent = artwork.artist_display
+      ? artwork.artist_display
+      : "Artist information is not available in catalog";
 
     const image = document.createElement("img");
     image.classList.add("art-image-card");
-    image.src = artwork.image_id ? `${imageLinkBase}/${artwork.image_id}/full/400,/0/default.jpg` : defaultImg;
+    image.src = artwork.image_id
+      ? `${imageLinkBase}/${artwork.image_id}/full/400,/0/default.jpg`
+      : defaultImg;
 
     card.append(title);
     card.append(artist);
@@ -61,48 +119,62 @@ function displayArtWork(artworks) {
 
     resultsContainer.append(card);
   });
-
-  /* TODO: add License underneath
-   "info": {
-        "license_text": "The `description` field in this response is licensed under a Creative Commons Attribution 4.0 Generic License (CC-By) and the Terms and Conditions of artic.edu. All other data in this response is licensed under a Creative Commons Zero (CC0) 1.0 designation and the Terms and Conditions of artic.edu.",
-        "license_links": [
-            "https://creativecommons.org/publicdomain/zero/1.0/",
-            "https://www.artic.edu/terms"
-        ],
-  */
 }
 
 function displayPagination() {
+  //TODO
+}
+
+function displayArtwork(artwork) {
+  // TODO
+}
+
+function displayArtists(artists) {
+  //TODO
+}
+
+function displayArtist(artist) {
+  //TODO
 }
 
 function clearSearchResults() {
   resultsContainer.innerHTML = "";
+  artistsContainer.innerHTML = "";
 }
 
-function handleSearch() {
-    const searchTerm = searchInput.value.trim();
+function handleArtworkSearch() {
+  const searchTerm = searchInput.value.trim();
 
   if (searchTerm === "") {
     clearSearchResults();
     statusMessage.textContent = "Please enter a search term.";
     return;
   }
-  fetchArtWorks(searchTerm);
+  fetchArtworks(searchTerm);
+}
+
+function handleArtistSearch() {
+  const searchTerm = searchInput.value.trim();
+  if (searchTerm === "") {
+    clearSearchResults();
+    statusMessage.textContent = "Please enter a search term.";
+    return;
+  }
+  fetchArtistSearch(searchTerm);
 }
 
 function clearSearchHandle() {
-    searchInput.value = "";
-    statusMessage.textContent = "";
-    clearSearchResults();
+  searchInput.value = "";
+  statusMessage.textContent = "";
+  clearSearchResults();
 }
 
-searchButton.addEventListener("click", handleSearch);
+searchArtworkButton.addEventListener("click", handleArtworkSearch);
 clearButton.addEventListener("click", clearSearchHandle);
 
 searchInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        handleSearch();
-    }
-})
-
-
+  if (event.key === "Enter") {
+    handleArtworkSearch();
+    handleArtistSearch();
+  }
+});

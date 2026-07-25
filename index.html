@@ -32,18 +32,21 @@
           type="text"
           id="search-input"
           name="search"
-          placeholder="Search artist, collection or by word ..."
+          placeholder="Search artwork, collection ..."
           size="50"
         />
-        <button id="search-button">Search</button>
+        <button id="search-artwork-button">Search artwork</button>
+        <button id="search-artist-button">Search artist</button>
         <button id="clear-button">Clear</button>
       </div>
     </section>
-    <section id="artworks">
-      <p id="status">Enter a search term to find artwork.</p>
-      <div id="results" class="cards-grid"></div>
+    <section id="search-results">
+      <p id="status">Enter a search term to find artwork or artist.</p>
+      <div id="artworks" class="cards-grid"></div>
+      <div id="artists" class="artists"></div>
       <div id="pagination"></div>
     </section>
+   
 
     <script src="script.js"></script>
   </body>
