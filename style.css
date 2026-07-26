@@ -50,6 +50,12 @@ p {
     margin: 0;
 }
 
+#status {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--medium);
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -63,7 +69,7 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 2rem;
+  padding: 0 2rem;
 }
 
 .title {
@@ -97,8 +103,8 @@ p {
 .art-image-card {
   padding: 1rem;
   border: 1px solid var(--grey);
-  margin: 1rem;
   background-color: var(--dark-grey);
+  margin-top: 1rem;
 }
 
 .license-text {
