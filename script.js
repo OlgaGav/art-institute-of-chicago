@@ -9,7 +9,7 @@ const paginationContainer = document.querySelector("#pagination");
 const defaultImg = "default.png";
 const artworkURL = "https://api.artic.edu/api/v1/artworks";
 const arstistURL = "https://api.artic.edu/api/v1/agents";
-const itemsPerPage = 10;
+const itemsPerPage = 24;
 const pageNumber = 1;
 
 async function fetchArtworks(searchTerm, pageNumber = 1) {
@@ -25,8 +25,8 @@ async function fetchArtworks(searchTerm, pageNumber = 1) {
       throw new Error(`Request failed: ${response.status}`);
     }
     const result = await response.json();
+    statusMessage.textContent = `Top ${itemsPerPage} results for "${searchTerm}"`;
     displayArtworks(result);
-    displayPagination();
   } catch (error) {
     console.error(error);
     statusMessage.textContent = error;
@@ -51,14 +51,17 @@ async function fetchArtwork(id) {
 }
 
 async function fetchArtistSearch(searchTerm) {
+  statusMessage.textContent = "Loading ...";
+  resultsContainer.innerHTML = "";
   try {
-    const url = `${arstistURL}/search?q=${searchTerm}`
+    const url = `${arstistURL}/search?q=${searchTerm}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Request failed: ${response.status}`);
     }
     const result = await response.json();
-    displayArtists(result);
+    statusMessage.textContent = "Click on the artist name to learn more";
+    displayArtists(result.data);
   } catch (error) {
     console.error(error);
     statusMessage.textContent = error;
@@ -71,9 +74,9 @@ async function fetchArtist(id) {
     const url = `${arstistURL}/${id}`;
     const response = await fetch(url);
     if (!response.ok) {
-      tch;
       throw new Error(`Request failed: ${response.status}`);
     }
+
     const result = await response.json();
     displayArtist(result);
   } catch (error) {
@@ -89,12 +92,11 @@ function displayArtworks(artworks) {
   }
   // conifgure the image link per documentation https://api.artic.edu/docs/#iiif-image-api
   const imageLinkBase = artworks.config.iiif_url;
-  const totalResults = artworks.pagination.total;
-  statusMessage.textContent = `Found ${totalResults} artworks`;
 
   artworks.data.forEach((artwork) => {
     const card = document.createElement("div");
     card.classList.add("card");
+    card.dataset.id = artwork.id;
     const title = document.createElement("h2");
     title.classList.add("artwork-card-title");
     title.textContent = artwork.title
@@ -121,16 +123,24 @@ function displayArtworks(artworks) {
   });
 }
 
-function displayPagination() {
-  //TODO
-}
-
 function displayArtwork(artwork) {
   // TODO
 }
 
 function displayArtists(artists) {
-  //TODO
+  if (artists.length === 0) {
+    statusMessage.textContent = "No artists found.";
+    return;
+  }
+  const artistsList = document.createElement("ul");
+  artists.map((artist) => {
+    const artistLi = document.createElement("li");
+    artistLi.textContent = artist.title;
+    artistLi.dataset.id = artist.id;
+    artistLi.classList.add("artist-item");
+    artistsList.append(artistLi);
+  });
+  artistsContainer.append(artistsList);
 }
 
 function displayArtist(artist) {
@@ -170,11 +180,12 @@ function clearSearchHandle() {
 }
 
 searchArtworkButton.addEventListener("click", handleArtworkSearch);
+searchArtistButton.addEventListener("click", handleArtistSearch);
 clearButton.addEventListener("click", clearSearchHandle);
 
 searchInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     handleArtworkSearch();
-    handleArtistSearch();
+    // handleArtistSearch();
   }
 });
