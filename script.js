@@ -19,7 +19,6 @@ async function fetchArtworks(searchTerm, pageNumber = 1) {
   try {
     showSearchResults();
     statusMessage.textContent = "Loading ...";
-    resultsContainer.innerHTML = "";
 
     const url = `${artworkURL}/search?q=${encodeURIComponent(searchTerm)}&fields=id,title,artist_display,image_id&page=${pageNumber}&limit=${itemsPerPage}
 `;
@@ -58,7 +57,6 @@ async function fetchArtistSearch(searchTerm) {
   try {
     showSearchResults();
     statusMessage.textContent = "Loading ...";
-    resultsContainer.innerHTML = "";
     const url = `${arstistURL}/search?q=${searchTerm}`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -91,6 +89,9 @@ async function fetchArtist(id) {
 }
 
 function displayArtworks(artworks) {
+  resultsContainer.innerHTML = "";
+  artistsContainer.innerHTML = "";
+
   if (artworks.data.length === 0) {
     statusMessage.textContent = "No artwork found.";
     return;
@@ -140,7 +141,9 @@ function displayArtwork(artwork) {
   artist.textContent = data.artist_display || "Artist unknown";
 
   const gallery_title = document.createElement("p");
-  gallery_title.textContent = data.medium_display || "";
+  gallery_title.textContent = data.gallery_title
+    ? `Gallery: ${data.gallery_title}`
+    : "";
 
   const image = document.createElement("img");
   image.classList.add("art-image-card");
@@ -149,34 +152,40 @@ function displayArtwork(artwork) {
     : defaultImg;
 
   const medium = document.createElement("p");
-  medium.textContent = data.medium_display || "";
+  medium.textContent = data.medium_display
+    ? `Medium: ${data.medium_display}`
+    : "";
 
   const date = document.createElement("p");
-  date.textContent = data.date_display || "";
+  date.textContent = data.date_display
+    ? `Date of display: ${data.date_display}`
+    : "";
 
-  const description = document.createElement("p");
-  description.textContent = data.description || "";
+  const description = document.createElement("div");
+  description.innerHTML = data.description || "";
 
   const inscriptions = document.createElement("div");
-  inscriptions.textContent = data.inscriptions || "";
+  inscriptions.innerHTML = data.inscriptions || "";
 
   const credit_line = document.createElement("p");
-  credit_line.textContent = data.credit_line || "";
+  credit_line.textContent = data.credit_line
+    ? `Credit line: ${data.credit_line}`
+    : "";
 
   const publication_history = document.createElement("div");
-  publication_history.textContent = data.publication_history || "";
+  publication_history.innerHTML = data.publication_history || "";
 
   detailContent.append(
     title,
     gallery_title,
     artist,
+    image,
     medium,
     date,
     credit_line,
     description,
     inscriptions,
     publication_history,
-    image,
   );
 
   searchResultsSection.classList.add("hidden");
@@ -184,10 +193,14 @@ function displayArtwork(artwork) {
 }
 
 function displayArtists(artists) {
+  artistsContainer.innerHTMl = "";
+  resultsContainer.innerHTML = "";
+  
   if (artists.length === 0) {
     statusMessage.textContent = "No artists found.";
     return;
   }
+
   const artistsList = document.createElement("ul");
   artists.map((artist) => {
     const artistLi = document.createElement("li");
@@ -200,7 +213,24 @@ function displayArtists(artists) {
 }
 
 function displayArtist(artist) {
-  //TODO
+  detailContent.innerHTMl = "";
+
+  const name = document.createElement("h2");
+  name.textContent = artist.title || "Unknown artist";
+
+  const dates = document.createElement("p");
+  const birth = artist.birth_date || "?";
+  const death = artist.death_date || "present";
+  dates.textContent = `${birth} - ${death}`;
+
+  const description = document.createElement("div");
+  description.innerHTML =
+    artist.description || `<p>No biography available.</p>`;
+
+  detailContent.append(name, dates, description);
+
+  searchResultsSection.classList.add("hidden");
+  detailView.classList.remove("hidden");
 }
 
 function clearSearchResults() {
@@ -265,5 +295,6 @@ artistsContainer.addEventListener("click", (event) => {
 
 backButton.addEventListener("click", () => {
   detailView.classList.add("hidden");
+  detailContent.innerHTML = "";
   searchResultsSection.classList.remove("hidden");
 });
