@@ -40,11 +40,14 @@
         <button id="clear-button">Clear</button>
       </div>
     </section>
-    <section id="search-results">
+    <section id="search-results" class="results-panel">
       <p id="status">Enter a search term to find artwork or artist.</p>
       <div id="artworks" class="cards-grid"></div>
       <div id="artists" class="artists"></div>
-      <div id="pagination"></div>
+    </section>
+    <section id="detail-view" class="hidden">
+      <button id="back-button"> Back to results</button>
+      <div id="detail-content"></div>
     </section>
    
     <script src="script.js"></script>

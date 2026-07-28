@@ -1,10 +1,11 @@
 /* color scheme used in application */
 :root {
   font-family: "Avenir Next", sans-serif;
-  --medium: #c592a8;
-  --light: #fdfefe;
-  --mint: #3ebcb3;
-  --dark-green: #1a4d4d;
+  --medium: #6b8b7f; /* secondary text color */
+  --hover-color: #c98b70;
+  --light: #fdfefe; /* background color */
+  --mint: #3ebcb3; /* header color */
+  --dark-green: #1a4d4d; /* primary text color */
   --grey: #dbdbdb;
   --dark-grey: #333333;
 }
@@ -44,16 +45,50 @@ body {
 }
 
 p {
-    font-size: 1rem;
-    color: var(--dark-green);
-    padding: 0;
-    margin: 0;
+  font-size: 1rem;
+  color: var(--dark-green);
+  padding: 0;
+  margin: 0;
+}
+
+input[type="text"] {
+  padding: 0.5rem;
+  border: 1px solid var(--grey);
+  border-radius: 0.25rem;
+  font-size: 1rem;
+}
+
+button {
+  background-color: var(--mint);
+  color: var(--light);
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--hover-color);
 }
 
 #status {
   font-size: 1rem;
   font-weight: 500;
   color: var(--medium);
+}
+
+#detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+#back-button {
+  margin: 1rem 2rem;
+  cursor: pointer;
 }
 
 .container {
@@ -65,7 +100,7 @@ p {
   padding: 2rem;
 }
 
-#search-results {
+.results-panel {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -73,7 +108,7 @@ p {
 }
 
 .title {
-    display: grid;
+  display: grid;
 }
 
 .cards-grid {
@@ -85,8 +120,21 @@ p {
 .card {
   display: flex;
   flex-direction: column;
+  background-color: var(--light);
   padding: 1rem;
-  
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .artwork-card-title {
@@ -107,9 +155,16 @@ p {
   margin-top: 1rem;
 }
 
-.license-text {
-  font-size: 0.75rem;
+.artist-item {
+  cursor: pointer;
   color: var(--dark-green);
-  padding: 0;
-  margin: 0;
+  font-size: 1.25rem;
+}
+
+.artist-item:hover {
+  color: var(--hover-color);
+}
+
+.hidden {
+  display: none;
 }
