@@ -2,10 +2,13 @@ const searchInput = document.querySelector("#search-input");
 const searchArtworkButton = document.querySelector("#search-artwork-button");
 const searchArtistButton = document.querySelector("#search-artist-button");
 const clearButton = document.querySelector("#clear-button");
+const searchResultsSection = document.querySelector(".results-panel");
 const resultsContainer = document.querySelector("#artworks");
 const artistsContainer = document.querySelector("#artists");
 const statusMessage = document.querySelector("#status");
-const paginationContainer = document.querySelector("#pagination");
+const detailView = document.querySelector("#detail-view");
+const detailContent = document.querySelector("#detail-content");
+const backButton = document.querySelector("#back-button");
 const defaultImg = "default.png";
 const artworkURL = "https://api.artic.edu/api/v1/artworks";
 const arstistURL = "https://api.artic.edu/api/v1/agents";
@@ -14,6 +17,7 @@ const pageNumber = 1;
 
 async function fetchArtworks(searchTerm, pageNumber = 1) {
   try {
+    showSearchResults();
     statusMessage.textContent = "Loading ...";
     resultsContainer.innerHTML = "";
 
@@ -51,9 +55,10 @@ async function fetchArtwork(id) {
 }
 
 async function fetchArtistSearch(searchTerm) {
-  statusMessage.textContent = "Loading ...";
-  resultsContainer.innerHTML = "";
   try {
+    showSearchResults();
+    statusMessage.textContent = "Loading ...";
+    resultsContainer.innerHTML = "";
     const url = `${arstistURL}/search?q=${searchTerm}`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -78,7 +83,7 @@ async function fetchArtist(id) {
     }
 
     const result = await response.json();
-    displayArtist(result);
+    displayArtist(result.data);
   } catch (error) {
     console.error(error);
     statusMessage.textContent = error;
@@ -115,16 +120,67 @@ function displayArtworks(artworks) {
       ? `${imageLinkBase}/${artwork.image_id}/full/400,/0/default.jpg`
       : defaultImg;
 
-    card.append(title);
-    card.append(artist);
-    card.append(image);
-
+    card.append(title, artist, image);
     resultsContainer.append(card);
   });
 }
 
 function displayArtwork(artwork) {
-  // TODO
+  const data = artwork.data;
+  const imageLinkBase = artwork.config.iiif_url;
+
+  //   clear the previous details if any
+  detailContent.innerHTML = "";
+
+  // generate new detail view
+  const title = document.createElement("h2");
+  title.textContent = data.title;
+
+  const artist = document.createElement("p");
+  artist.textContent = data.artist_display || "Artist unknown";
+
+  const gallery_title = document.createElement("p");
+  gallery_title.textContent = data.medium_display || "";
+
+  const image = document.createElement("img");
+  image.classList.add("art-image-card");
+  image.src = data.image_id
+    ? `${imageLinkBase}/${data.image_id}/full/600,/0/default.jpg`
+    : defaultImg;
+
+  const medium = document.createElement("p");
+  medium.textContent = data.medium_display || "";
+
+  const date = document.createElement("p");
+  date.textContent = data.date_display || "";
+
+  const description = document.createElement("p");
+  description.textContent = data.description || "";
+
+  const inscriptions = document.createElement("div");
+  inscriptions.textContent = data.inscriptions || "";
+
+  const credit_line = document.createElement("p");
+  credit_line.textContent = data.credit_line || "";
+
+  const publication_history = document.createElement("div");
+  publication_history.textContent = data.publication_history || "";
+
+  detailContent.append(
+    title,
+    gallery_title,
+    artist,
+    medium,
+    date,
+    credit_line,
+    description,
+    inscriptions,
+    publication_history,
+    image,
+  );
+
+  searchResultsSection.classList.add("hidden");
+  detailView.classList.remove("hidden");
 }
 
 function displayArtists(artists) {
@@ -177,6 +233,12 @@ function clearSearchHandle() {
   searchInput.value = "";
   statusMessage.textContent = "";
   clearSearchResults();
+  showSearchResults();
+}
+
+function showSearchResults() {
+  detailView.classList.add("hidden");
+  searchResultsSection.classList.remove("hidden");
 }
 
 searchArtworkButton.addEventListener("click", handleArtworkSearch);
@@ -186,6 +248,22 @@ clearButton.addEventListener("click", clearSearchHandle);
 searchInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     handleArtworkSearch();
-    // handleArtistSearch();
   }
+});
+
+resultsContainer.addEventListener("click", (event) => {
+  const card = event.target.closest(".card");
+  if (!card) return;
+  fetchArtwork(card.dataset.id);
+});
+
+artistsContainer.addEventListener("click", (event) => {
+  const item = event.target.closest("li");
+  if (!item) return;
+  fetchArtist(item.dataset.id);
+});
+
+backButton.addEventListener("click", () => {
+  detailView.classList.add("hidden");
+  searchResultsSection.classList.remove("hidden");
 });
