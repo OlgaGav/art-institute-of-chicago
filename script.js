@@ -3,7 +3,7 @@ const searchArtworkButton = document.querySelector("#search-artwork-button");
 const searchArtistButton = document.querySelector("#search-artist-button");
 const clearButton = document.querySelector("#clear-button");
 const searchResultsSection = document.querySelector(".results-panel");
-const resultsContainer = document.querySelector("#artworks");
+const artworksContainer = document.querySelector("#artworks");
 const artistsContainer = document.querySelector("#artists");
 const statusMessage = document.querySelector("#status");
 const detailView = document.querySelector("#detail-view");
@@ -42,7 +42,6 @@ async function fetchArtwork(id) {
     const url = `${artworkURL}/${id}`;
     const response = await fetch(url);
     if (!response.ok) {
-      tch;
       throw new Error(`Request failed: ${response.status}`);
     }
     const result = await response.json();
@@ -89,8 +88,9 @@ async function fetchArtist(id) {
 }
 
 function displayArtworks(artworks) {
-  resultsContainer.innerHTML = "";
+  artworksContainer.innerHTML = "";
   artistsContainer.innerHTML = "";
+  detailContent.innerHTML = "";
 
   if (artworks.data.length === 0) {
     statusMessage.textContent = "No artwork found.";
@@ -122,7 +122,7 @@ function displayArtworks(artworks) {
       : defaultImg;
 
     card.append(title, artist, image);
-    resultsContainer.append(card);
+    artworksContainer.append(card);
   });
 }
 
@@ -193,8 +193,9 @@ function displayArtwork(artwork) {
 }
 
 function displayArtists(artists) {
-  artistsContainer.innerHTMl = "";
-  resultsContainer.innerHTML = "";
+  artistsContainer.innerHTML = "";
+  artworksContainer.innerHTML = "";
+  detailContent.innerHTML = "";
   
   if (artists.length === 0) {
     statusMessage.textContent = "No artists found.";
@@ -213,7 +214,7 @@ function displayArtists(artists) {
 }
 
 function displayArtist(artist) {
-  detailContent.innerHTMl = "";
+  detailContent.innerHTML = "";
 
   const name = document.createElement("h2");
   name.textContent = artist.title || "Unknown artist";
@@ -234,8 +235,9 @@ function displayArtist(artist) {
 }
 
 function clearSearchResults() {
-  resultsContainer.innerHTML = "";
+  artworksContainer.innerHTML = "";
   artistsContainer.innerHTML = "";
+  detailContent.innerHTML = "";
 }
 
 function handleArtworkSearch() {
@@ -281,7 +283,7 @@ searchInput.addEventListener("keydown", (event) => {
   }
 });
 
-resultsContainer.addEventListener("click", (event) => {
+artworksContainer.addEventListener("click", (event) => {
   const card = event.target.closest(".card");
   if (!card) return;
   fetchArtwork(card.dataset.id);
