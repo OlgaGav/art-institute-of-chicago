@@ -16,7 +16,7 @@
         />
         <div class="title">
           <h1>The Art Institute of Chicago</h1>
-          <p>Explore artworks & artists</p>
+          <h3>Explore artworks & artists</h3>
         </div>
       </div>
     </header>
@@ -26,18 +26,19 @@
         you can view the list of the work in disposal of the Art institute of
         Chicago.
       </p>
-      <div>
+      <div class="search-panel">
         <label>Explore artworks:</label>
         <input
           type="text"
           id="search-input"
           name="search"
           placeholder="Search artwork, collection ..."
-          size="50"
         />
-        <button id="search-artwork-button">Search artwork</button>
-        <button id="search-artist-button">Search artist</button>
-        <button id="clear-button">Clear</button>
+        <div class="buttons-group">
+          <button id="search-artwork-button">Search artwork</button>
+          <button id="search-artist-button">Search artist</button>
+          <button id="clear-button">Clear</button>
+        </div>
       </div>
     </section>
     <section id="search-results" class="results-panel">
@@ -46,10 +47,10 @@
       <div id="artists" class="artists"></div>
     </section>
     <section id="detail-view" class="hidden">
-      <button id="back-button"> Back to results</button>
+      <button id="back-button">Back to results</button>
       <div id="detail-content"></div>
     </section>
-   
+
     <script src="script.js"></script>
   </body>
 </html>
