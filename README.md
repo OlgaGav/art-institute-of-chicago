@@ -16,6 +16,8 @@ Built as pre-work for Code the Dream. Called next API:
 
 **Live demo:** https://olgagav.github.io/art-institute-of-chicago
 
+***Note: images are not loaded in this version due to issue on Cloudflare, hence return status 403 Forbidden***
+
 ## Features
 
 - Search artworks by keyword or title
@@ -32,6 +34,8 @@ Built as pre-work for Code the Dream. Called next API:
 3. Click any artwork card or artist name to view more details
 4. Click on **Back to results** to return to your search results
 5. Click **Clear** to reset the search
+
+![screenshot of the application after the search](screenshot.png)
 
 ## DOM Structure Diagram
 ![DOM sructre diagram](./diagram.png)
