@@ -12,7 +12,7 @@ const backButton = document.querySelector("#back-button");
 const defaultImg = "default.png";
 const artworkURL = "https://api.artic.edu/api/v1/artworks";
 const arstistURL = "https://api.artic.edu/api/v1/agents";
-const itemsPerPage = 10;
+const itemsPerPage = 2;
 const pageNumber = 1;
 
 async function fetchArtworks(searchTerm, pageNumber = 1) {
@@ -46,13 +46,11 @@ async function fetchArtwork(id) {
   try {
     const url = `${artworkURL}/${id}`;
     // Added header per documentation https://api.artic.edu/docs/#authentication
-    const response = await fetch(url, 
-        {
+    const response = await fetch(url, {
       headers: {
         "AIC-User-Agent": "art-institute-explorer (ogavby@gmail.com)",
       },
-    }
-    );
+    });
     if (!response.ok) {
       throw new Error(`Request failed: ${response.status}`);
     }
@@ -88,7 +86,7 @@ async function fetchArtistSearch(searchTerm) {
 }
 
 //fetch the details of the artist by id
-async function fetchArtist(id) {
+async function fetchArtist(id, { inline = false } = {}, afterElement = {}) {
   try {
     const url = `${arstistURL}/${id}`;
     // Added header per documentation https://api.artic.edu/docs/#authentication
@@ -102,7 +100,11 @@ async function fetchArtist(id) {
     }
 
     const result = await response.json();
-    displayArtist(result.data);
+    if (inline) {
+      displayArtistInline(result.data, afterElement);
+    } else {
+      displayArtist(result.data);
+    }
   } catch (error) {
     console.error(error);
     statusMessage.textContent = error;
@@ -162,6 +164,13 @@ function displayArtwork(artwork) {
 
   const artist = document.createElement("p");
   artist.textContent = data.artist_display || "Artist unknown";
+  if (data.artist_id) {
+    const viewArtistDetails = document.createElement("span");
+    viewArtistDetails.textContent = "View artist details";
+    viewArtistDetails.classList.add("artist-link");
+    viewArtistDetails.dataset.id = data.artist_id;
+    artist.append(viewArtistDetails);
+  }
 
   const gallery_title = document.createElement("p");
   gallery_title.textContent = data.gallery_title
@@ -258,6 +267,24 @@ function displayArtist(artist) {
   detailView.classList.remove("hidden");
 }
 
+function displayArtistInline(artist, afterElement) {
+  // generate div with Artist Details
+  const dates = document.createElement("p");
+  const birth = artist.birth_date || "?";
+  const death = artist.death_date || "present";
+  dates.textContent = `${birth} - ${death}`;
+  const bio = document.createElement("p");
+  bio.textContent = "Biography: ";
+  const bioDetails = document.createElement("div");
+  bioDetails.innerHTML = artist.description;
+
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("artist-online-details");
+  wrapper.append(dates, bio, bioDetails);
+
+  afterElement.insertAdjacentElement("afterend", wrapper);
+}
+
 function clearSearchResults() {
   artworksContainer.innerHTML = "";
   artistsContainer.innerHTML = "";
@@ -323,4 +350,21 @@ backButton.addEventListener("click", () => {
   detailView.classList.add("hidden");
   detailContent.innerHTML = "";
   searchResultsSection.classList.remove("hidden");
+});
+
+detailContent.addEventListener("click", (event) => {
+  const artistLink = event.target.closest(".artist-link");
+  if (artistLink) {
+    // validate if inline Artist Details already displayed, to avoid duplicate the details
+    const existing = artistLink.nextElementSibling;
+    if (existing && existing.classList.contains("artist-online-details")) {
+      existing.remove();
+      return;
+    }
+    fetchArtist(
+      artistLink.dataset.id,
+      { inline: true },
+      (afterElement = artistLink),
+    );
+  }
 });

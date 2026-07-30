@@ -196,6 +196,15 @@ button:hover {
   margin-top: 1rem;
 }
 
+.artist-link {
+  color: var(--dark-green);
+  font-weight: 500;
+  cursor: pointer !important;
+  text-decoration: underline;
+  text-decoration-color: var(--dark-green);
+  margin-left: 1rem;
+}
+
 /* artist items */
 .artist-item {
   cursor: pointer;
