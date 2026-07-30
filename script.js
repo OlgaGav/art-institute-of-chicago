@@ -12,7 +12,7 @@ const backButton = document.querySelector("#back-button");
 const defaultImg = "default.png";
 const artworkURL = "https://api.artic.edu/api/v1/artworks";
 const arstistURL = "https://api.artic.edu/api/v1/agents";
-const itemsPerPage = 24;
+const itemsPerPage = 10;
 const pageNumber = 1;
 
 async function fetchArtworks(searchTerm, pageNumber = 1) {
@@ -117,6 +117,7 @@ function displayArtworks(artworks) {
 
     const image = document.createElement("img");
     image.classList.add("art-image-card");
+    image.loading = "lazy";
     image.src = artwork.image_id
       ? `${imageLinkBase}/${artwork.image_id}/full/400,/0/default.jpg`
       : defaultImg;
@@ -147,6 +148,7 @@ function displayArtwork(artwork) {
 
   const image = document.createElement("img");
   image.classList.add("art-image-card");
+  image.loading = "lazy";
   image.src = data.image_id
     ? `${imageLinkBase}/${data.image_id}/full/600,/0/default.jpg`
     : defaultImg;
