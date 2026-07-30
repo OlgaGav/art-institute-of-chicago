@@ -20,9 +20,14 @@ async function fetchArtworks(searchTerm, pageNumber = 1) {
     showSearchResults();
     statusMessage.textContent = "Loading ...";
 
-    const url = `${artworkURL}/search?q=${encodeURIComponent(searchTerm)}&fields=id,title,artist_display,image_id&page=${pageNumber}&limit=${itemsPerPage}
-`;
-    const response = await fetch(url);
+    const url = `${artworkURL}/search?q=${encodeURIComponent(searchTerm)}&fields=id,title,artist_display,image_id&page=${pageNumber}&limit=${itemsPerPage}`;
+
+    // Added header per documentation https://api.artic.edu/docs/#authentication
+    const response = await fetch(url, {
+      headers: {
+        "AIC-User-Agent": "art-institute-explorer (ogavby@gmail.com)",
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`Request failed: ${response.status}`);
@@ -40,7 +45,14 @@ async function fetchArtworks(searchTerm, pageNumber = 1) {
 async function fetchArtwork(id) {
   try {
     const url = `${artworkURL}/${id}`;
-    const response = await fetch(url);
+    // Added header per documentation https://api.artic.edu/docs/#authentication
+    const response = await fetch(url, 
+        {
+      headers: {
+        "AIC-User-Agent": "art-institute-explorer (ogavby@gmail.com)",
+      },
+    }
+    );
     if (!response.ok) {
       throw new Error(`Request failed: ${response.status}`);
     }
@@ -56,8 +68,13 @@ async function fetchArtistSearch(searchTerm) {
   try {
     showSearchResults();
     statusMessage.textContent = "Loading ...";
+    // Added header per documentation https://api.artic.edu/docs/#authentication
     const url = `${arstistURL}/search?q=${searchTerm}`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        "AIC-User-Agent": "art-institute-explorer (ogavby@gmail.com)",
+      },
+    });
     if (!response.ok) {
       throw new Error(`Request failed: ${response.status}`);
     }
@@ -74,7 +91,12 @@ async function fetchArtistSearch(searchTerm) {
 async function fetchArtist(id) {
   try {
     const url = `${arstistURL}/${id}`;
-    const response = await fetch(url);
+    // Added header per documentation https://api.artic.edu/docs/#authentication
+    const response = await fetch(url, {
+      headers: {
+        "AIC-User-Agent": "art-institute-explorer (ogavby@gmail.com)",
+      },
+    });
     if (!response.ok) {
       throw new Error(`Request failed: ${response.status}`);
     }
@@ -198,7 +220,7 @@ function displayArtists(artists) {
   artistsContainer.innerHTML = "";
   artworksContainer.innerHTML = "";
   detailContent.innerHTML = "";
-  
+
   if (artists.length === 0) {
     statusMessage.textContent = "No artists found.";
     return;
