@@ -12,7 +12,7 @@ const backButton = document.querySelector("#back-button");
 const defaultImg = "default.png";
 const artworkURL = "https://api.artic.edu/api/v1/artworks";
 const arstistURL = "https://api.artic.edu/api/v1/agents";
-const itemsPerPage = 2;
+const itemsPerPage = 8;
 const pageNumber = 1;
 
 async function fetchArtworks(searchTerm, pageNumber = 1) {
@@ -20,7 +20,7 @@ async function fetchArtworks(searchTerm, pageNumber = 1) {
     showSearchResults();
     statusMessage.textContent = "Loading ...";
 
-    const url = `${artworkURL}/search?q=${encodeURIComponent(searchTerm)}&fields=id,title,artist_display,image_id&page=${pageNumber}&limit=${itemsPerPage}`;
+    const url = `${artworkURL}/search?q=${encodeURIComponent(searchTerm)}&query[term][is_public_domain]=true&fields=id,title,artist_display,image_id&page=${pageNumber}&limit=${itemsPerPage}`;
 
     // Added header per documentation https://api.artic.edu/docs/#authentication
     const response = await fetch(url, {
@@ -105,6 +105,28 @@ async function fetchArtist(id, { inline = false } = {}, afterElement = {}) {
     } else {
       displayArtist(result.data);
     }
+  } catch (error) {
+    console.error(error);
+    statusMessage.textContent = error;
+  }
+}
+
+// fetch artworks filtered by artist ID
+async function fetchArtworkByArtist(
+  artistId,
+  { inline = false },
+  afterElement = {},
+) {
+  try {
+    const url = `${artworkURL}/search?query[term][artist_id]=${artistId}&fields=id,title,artist_display,image_id&limit=8`;
+    const response = await fetch(url, {
+      headers: {
+        "AIC-User-Agent": "art-institute-explorer (ogavby@gmail.com)",
+      },
+    });
+    if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+    const result = await response.json();
+    displayArtistArtworks(result, afterElement);
   } catch (error) {
     console.error(error);
     statusMessage.textContent = error;
@@ -257,11 +279,16 @@ function displayArtist(artist) {
   const death = artist.death_date || "present";
   dates.textContent = `${birth} - ${death}`;
 
+  const viewArtworksForArtist = document.createElement("p");
+  viewArtworksForArtist.textContent = "View artworks for this artist";
+  viewArtworksForArtist.classList.add("artwork-for-artist-link");
+  viewArtworksForArtist.dataset.id = artist.id;
+
   const description = document.createElement("div");
   description.innerHTML =
     artist.description || `<p>No biography available.</p>`;
 
-  detailContent.append(name, dates, description);
+  detailContent.append(name, dates, viewArtworksForArtist, description);
 
   searchResultsSection.classList.add("hidden");
   detailView.classList.remove("hidden");
@@ -276,12 +303,53 @@ function displayArtistInline(artist, afterElement) {
   const bio = document.createElement("p");
   bio.textContent = "Biography: ";
   const bioDetails = document.createElement("div");
-  bioDetails.innerHTML = artist.description;
+  bioDetails.innerHTML = artist.description || "Information Not Available";
 
   const wrapper = document.createElement("div");
   wrapper.classList.add("artist-online-details");
   wrapper.append(dates, bio, bioDetails);
 
+  afterElement.insertAdjacentElement("afterend", wrapper);
+}
+
+function displayArtistArtworks(artworks, afterElement) {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("artist-artworks");
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Artworks by this artist";
+
+  const grid = document.createElement("div");
+  grid.classList.add("cards-grid");
+  grid.id = "artist-work";
+
+  if (artworks.data.length === 0) {
+    const empty = document.createElement("p");
+    empty.textContent = "No artworks found for this artist";
+    wrapper.append(heading, empty);
+  } else {
+    const imageLinkBase = artworks.config.iiif_url;
+    artworks.data.forEach((artwork) => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.dataset.id = artwork.id;
+
+      const title = document.createElement("h2");
+      title.classList.add("artwork-card-title");
+      title.textContent = artwork.title || "Title unavailable";
+
+      const image = document.createElement("img");
+      image.classList.add("art-image-card");
+      image.loading = "lazy";
+      image.src = artwork.image_id
+        ? `${imageLinkBase}/${artwork.image_id}/full/400,/0/default.jpg`
+        : defaultImg;
+
+      card.append(title, image);
+      grid.append(card);
+    });
+    wrapper.append(heading, grid);
+  }
   afterElement.insertAdjacentElement("afterend", wrapper);
 }
 
@@ -361,10 +429,23 @@ detailContent.addEventListener("click", (event) => {
       existing.remove();
       return;
     }
-    fetchArtist(
-      artistLink.dataset.id,
+    fetchArtist(artistLink.dataset.id, { inline: true }, artistLink);
+  }
+
+  const artworksPerArtistLink = event.target.closest(
+    ".artwork-for-artist-link",
+  );
+  if (artworksPerArtistLink) {
+    // check if links was clicked and artworks already displayed on the page
+    const existing = artworksPerArtistLink.nextElementSibling;
+    if (existing && existing.classList.contains("artist-artworks")) {
+      existing.remove();
+      return;
+    }
+    fetchArtworkByArtist(
+      artworksPerArtistLink.dataset.id,
       { inline: true },
-      (afterElement = artistLink),
+      artworksPerArtistLink,
     );
   }
 });

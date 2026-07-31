@@ -4,6 +4,9 @@
   --medium: #6b8b7f; /* secondary text color */
   --hover-color: #c98b70;
   --light: #fdfefe; /* background color */
+  --light-5:  #d4e2dc;
+  --light-10: #c9d6d0;
+  --light-15: #becac4;
   --mint: #3ebcb3; /* header color */
   --dark-green: #1a4d4d; /* primary text color */
   --grey: #dbdbdb;
@@ -156,6 +159,7 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
   gap: 1.5rem;
+  margin: 1rem 0;
 }
 
 .card {
@@ -196,13 +200,28 @@ button:hover {
   margin-top: 1rem;
 }
 
-.artist-link {
+.artist-link
+{
   color: var(--dark-green);
   font-weight: 500;
   cursor: pointer !important;
   text-decoration: underline;
   text-decoration-color: var(--dark-green);
   margin-left: 1rem;
+}
+
+.artwork-for-artist-link 
+{
+  color: var(--dark-green);
+  font-weight: 500;
+  cursor: pointer !important;
+  text-decoration: underline;
+  text-decoration-color: var(--dark-green);
+  border: 1px solid var(--dark-green);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  margin-top: 1rem;
+  background-color: var(--light-5);
 }
 
 /* artist items */
@@ -214,6 +233,14 @@ button:hover {
 
 .artist-item:hover {
   color: var(--hover-color);
+}
+
+.artist-online-details{
+  background-color: var(--light);
+  border: 1px solid var(--medium);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
 }
 
 .hidden {
