@@ -14,6 +14,7 @@ const artworkURL = "https://api.artic.edu/api/v1/artworks";
 const arstistURL = "https://api.artic.edu/api/v1/agents";
 const itemsPerPage = 8;
 const pageNumber = 1;
+const proxyBase = "https://corsproxy.io/?url=";
 
 async function fetchArtworks(searchTerm, pageNumber = 1) {
   try {
@@ -169,8 +170,8 @@ function displayArtworks(artworks) {
       : defaultImg;
     image.onerror = () => {
       image.onerror = null;
-      image.src = artwork.thumbnail.lqip;
-      image.alt = artwork.thumbnail.alt_text;
+      image.src = artwork.thumbnail?.lqip || defaultImg;
+      image.alt = artwork.thumbnail?.alt_text || "Image not available";
     };
     card.append(title, artist, image);
     artworksContainer.append(card);
@@ -180,6 +181,7 @@ function displayArtworks(artworks) {
 function displayArtwork(artwork) {
   const data = artwork.data;
   const imageLinkBase = artwork.config.iiif_url;
+  const rawImageUrl = `${imageLinkBase}/${data.image_id}/full/600,/0/default.jpg`
 
   //   clear the previous details if any
   detailContent.innerHTML = "";
@@ -212,8 +214,8 @@ function displayArtwork(artwork) {
 
   image.onerror = () => {
     image.onerror = null;
-    image.src = data.thumbnail.lqip;
-    image.alt = data.thumbnail.alt_text;
+    image.src = data.thumbnail?.lqip || defaultImg;
+    image.alt = data.thumbnail?.alt_text || "Image not available";
   };
 
   const medium = document.createElement("p");
@@ -356,8 +358,8 @@ function displayArtistArtworks(artworks, afterElement) {
         : defaultImg;
       image.onerror = () => {
         image.onerror = null;
-        image.src = artwork.thumbnail.lqip;
-        image.alt = artwork.thumbnail.alt_text;
+        image.src = artwork.thumbnail?.lqip || defaultImg;
+        image.alt = artwork.thumbnail?.alt_text || "Image not available";
       };
 
       card.append(title, image);
