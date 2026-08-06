@@ -16,13 +16,13 @@ Built as pre-work for Code the Dream. Called next API:
 
 **Live demo:** https://olgagav.github.io/art-institute-of-chicago
 
-***Note: images are not loaded in this version due to issue on Cloudflare, hence return status 403 Forbidden***
+***Note: Artwork images are loaded from the Art Institute of Chicago's IIIF image server and fail to load due to a Cross-Origin-Resource-Policy: same-origin restriction that blocks direct image requests from third-party origins; when this happens, the app shows thumbnail from responce.***
 
 ## Features
 
 - Search artworks by keyword or title
 - Search artists by name
-- Browse a results in a card/list layout 
+- Browse a results in a card (for artwork)/list (for artist) layout 
 - Click into any artwork or artist to view more detail, fetched live from the API 
 - Navigate back to results without additional fetch request
 - Added handling for empty results, and failed requests
@@ -42,7 +42,7 @@ Built as pre-work for Code the Dream. Called next API:
 
 ## Tech stack
 - HTML5
-- CSS3
+- CSS
 - Vanilla JavaScript (ES modules, fetch API)
 - Art Institute of Chicago API — no API key required
 
