@@ -20,7 +20,7 @@ async function fetchArtworks(searchTerm, pageNumber = 1) {
     showSearchResults();
     statusMessage.textContent = "Loading ...";
 
-    const url = `${artworkURL}/search?q=${encodeURIComponent(searchTerm)}&query[term][is_public_domain]=true&fields=id,title,artist_display,image_id&page=${pageNumber}&limit=${itemsPerPage}`;
+    const url = `${artworkURL}/search?q=${encodeURIComponent(searchTerm)}&query[term][is_public_domain]=true&fields=id,title,artist_display,image_id,thumbnail&page=${pageNumber}&limit=${itemsPerPage}`;
 
     // Added header per documentation https://api.artic.edu/docs/#authentication
     const response = await fetch(url, {
@@ -118,7 +118,7 @@ async function fetchArtworkByArtist(
   afterElement = {},
 ) {
   try {
-    const url = `${artworkURL}/search?query[term][artist_id]=${artistId}&fields=id,title,artist_display,image_id&limit=8`;
+    const url = `${artworkURL}/search?query[term][artist_id]=${artistId}&fields=id,title,artist_display,image_id,thumbnail&limit=8`;
     const response = await fetch(url, {
       headers: {
         "AIC-User-Agent": "art-institute-explorer (ogavby@gmail.com)",
@@ -167,7 +167,11 @@ function displayArtworks(artworks) {
     image.src = artwork.image_id
       ? `${imageLinkBase}/${artwork.image_id}/full/400,/0/default.jpg`
       : defaultImg;
-
+    image.onerror = () => {
+      image.onerror = null;
+      image.src = artwork.thumbnail.lqip;
+      image.alt = artwork.thumbnail.alt_text;
+    };
     card.append(title, artist, image);
     artworksContainer.append(card);
   });
@@ -205,6 +209,12 @@ function displayArtwork(artwork) {
   image.src = data.image_id
     ? `${imageLinkBase}/${data.image_id}/full/600,/0/default.jpg`
     : defaultImg;
+
+  image.onerror = () => {
+    image.onerror = null;
+    image.src = data.thumbnail.lqip;
+    image.alt = data.thumbnail.alt_text;
+  };
 
   const medium = document.createElement("p");
   medium.textContent = data.medium_display
@@ -344,6 +354,11 @@ function displayArtistArtworks(artworks, afterElement) {
       image.src = artwork.image_id
         ? `${imageLinkBase}/${artwork.image_id}/full/400,/0/default.jpg`
         : defaultImg;
+      image.onerror = () => {
+        image.onerror = null;
+        image.src = artwork.thumbnail.lqip;
+        image.alt = artwork.thumbnail.alt_text;
+      };
 
       card.append(title, image);
       grid.append(card);
