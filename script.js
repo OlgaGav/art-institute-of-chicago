@@ -14,7 +14,6 @@ const artworkURL = "https://api.artic.edu/api/v1/artworks";
 const arstistURL = "https://api.artic.edu/api/v1/agents";
 const itemsPerPage = 8;
 const pageNumber = 1;
-const proxyBase = "https://corsproxy.io/?url=";
 
 async function fetchArtworks(searchTerm, pageNumber = 1) {
   try {
