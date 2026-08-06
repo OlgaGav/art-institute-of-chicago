@@ -16,8 +16,6 @@ Built as pre-work for Code the Dream. Called next API:
 
 **Live demo:** https://olgagav.github.io/art-institute-of-chicago
 
-***Note: Artwork images are loaded from the Art Institute of Chicago's IIIF image server and fail to load due to a Cross-Origin-Resource-Policy: same-origin restriction that blocks direct image requests from third-party origins; when this happens, the app shows thumbnail from responce.***
-
 ## Features
 
 - Search artworks by keyword or title
