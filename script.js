@@ -269,7 +269,7 @@ function displayArtists(artists) {
   }
 
   const artistsList = document.createElement("ul");
-  artists.map((artist) => {
+  artists.forEach((artist) => {
     const artistLi = document.createElement("li");
     artistLi.textContent = artist.title;
     artistLi.dataset.id = artist.id;
